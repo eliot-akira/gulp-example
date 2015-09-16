@@ -1,0 +1,17 @@
+// Testing
+
+$bgcolor: #004;
+$color: #eee;
+
+body {
+  background-color: $bgcolor;
+  color: $color;
+}
+
+h1 {
+  text-decoration: underline;
+}
+
+a {
+    transition: transform 1s; /* it will be prefixed */
+}
