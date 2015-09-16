@@ -2,12 +2,13 @@
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var log = require('../../util/log');
+var path = require('path');
 
 module.exports = function runCompileCSS( options, dev ) {
 
   dev = (typeof dev !== 'undefined') ? dev : false;
 
-  var entry = options.src+options.entry+options.extension;
+  var entry = path.join(options.src, options.entry+options.extension);
 
   var stream = gulp.src( entry )
     .pipe(plugins.plumber());
@@ -31,7 +32,7 @@ module.exports = function runCompileCSS( options, dev ) {
       .pipe( gulp.dest( options.dest ) )
       .on('end', function() {
         log( 'Sass', 'Compiled with'+(dev?'':'out')+' source map: from '+
-          entry+' to '+options.dest+options.slug+'.css');
+          entry+' to '+path.join(options.dest, options.slug+'.css'));
       });
 
   return stream;

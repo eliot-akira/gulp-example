@@ -26,5 +26,7 @@ function runImageMin( src, dest, files ) {
       interlaced: true
     }) )
     .pipe(gulp.dest( dest ))
-    .on('end', function(){ log( 'Images', 'Optimized: '+src+' to '+dest) });
+    .on('end', function(){
+      log( 'Images', 'Optimized: from '+src+' to '+dest);
+    });
 }

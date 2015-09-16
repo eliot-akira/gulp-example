@@ -34,10 +34,10 @@ module.exports = {
     target = typeof target !== 'undefined' ? target : defaultBoolean;
 
     if ( target ) {
-      if ( typeof target !== 'boolean' ) {
-        target = Array.isArray( target ) ? target : [ target ];
-      } else {
+      if ( typeof target === 'boolean' ) {
         target = Array.isArray( defaultArray ) ? defaultArray : [ defaultArray ];
+      } else {
+        target = Array.isArray( target ) ? target : [ target ];
       }
     }
     return target;
@@ -48,10 +48,10 @@ module.exports = {
     target = typeof target !== 'undefined' ? target : defaultBoolean;
 
     if ( target ) {
-      if ( typeof target !== 'boolean' ) {
-        target = this.props( target, defaultObject );
-      } else {
+      if ( typeof target === 'boolean' ) {
         target = defaultObject;
+      } else {
+        target = this.props( target, defaultObject );
       }
     }
     return target;

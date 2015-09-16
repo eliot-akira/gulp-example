@@ -1,14 +1,17 @@
 
 var del = require('del');
 var log = require('../../util/log');
+var path = require('path');
 
 module.exports = function runCleanJS( options ) {
 
   if ( ! options.clean ) return;
 
-  del( [ options.dest+options.slug+'.js', options.dest+options.slug+'.min.js' ] )
+  var compiled = path.join(options.dest, options.slug+'.js');
+  var minified = path.join(options.dest, options.slug+'.min.js');
+
+  del([compiled, minified])
     .then( function(){
-      log( 'JS', 'Removed previous bundle: '+options.dest+options.slug+'.js and '+
-        options.dest+options.slug+'.min.js');
+      log( 'JS', 'Removed previous bundle: '+compiled+' and '+minified);
     });
 };

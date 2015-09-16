@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     log = require('../util/log'),
     allTasks = [],
     cssTasks = [], cssDevTasks = [],
-    jsTasks = [], jsDevTasks = [],
+    jsTasks = [], jsDevTasks = [], cleanTasks = [],
     lintTasks = [], imgTasks = [], zipTasks = [],
     task = '';
 
@@ -15,6 +15,7 @@ module.exports = function defaultTasks( config ) {
       allTasks.push(task);
       cssTasks.push(task);
       cssDevTasks.push('css-dev-'+asset.css.slug);
+      cleanTasks.push('css-clean-'+asset.css.slug);
       lintTasks.push('css-lint-'+asset.css.slug);
     }
 
@@ -23,6 +24,7 @@ module.exports = function defaultTasks( config ) {
       allTasks.push(task);
       jsTasks.push(task);
       jsDevTasks.push('js-dev-'+asset.js.slug);
+      cleanTasks.push('js-clean-'+asset.css.slug);
       lintTasks.push('js-lint-'+asset.js.slug);
     }
 
@@ -53,6 +55,7 @@ module.exports = function defaultTasks( config ) {
     devTasks = devTasks.concat(jsDevTasks);
   }
 
+  if ( cleanTasks.length ) gulp.task('clean', cleanTasks);
   if ( lintTasks.length ) gulp.task('lint', lintTasks);
   if ( imgTasks.length ) gulp.task('img', imgTasks);
   if ( zipTasks.length ) gulp.task('zip', zipTasks);

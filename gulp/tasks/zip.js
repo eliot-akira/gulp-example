@@ -1,7 +1,7 @@
 
-var gulp = require('gulp'),
-    plugins = require('gulp-load-plugins')(),
-    log = require('../util/log');
+var gulp = require('gulp');
+var plugins = require('gulp-load-plugins')();
+var log = require('../util/log');
 
 
 module.exports = function zipTasks( config ) {

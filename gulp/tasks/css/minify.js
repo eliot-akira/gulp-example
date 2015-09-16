@@ -2,6 +2,7 @@
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var log = require('../../util/log');
+var path = require('path');
 var setDefault = require('../../util/set-default.js');
 
 module.exports = function runMinifyCSS( options, dev ) {
@@ -35,7 +36,8 @@ module.exports = function runMinifyCSS( options, dev ) {
 
     options.minify = setDefault.props( options.minify, {
       keepSpecialComments : false,
-      relativeTo : options.dest
+      relativeTo : options.dest,
+      processImport: false
     });
 
     // Minify in production
@@ -47,7 +49,9 @@ module.exports = function runMinifyCSS( options, dev ) {
 
   stream = stream
     .pipe( gulp.dest( options.dest ) )
-    .on('end', function(){ log( 'CSS', message+' to '+options.dest+options.slug+'.min.css') });
+    .on('end', function(){
+      log( 'CSS', message+' to '+path.join(options.dest, options.slug+'.min.css'));
+    });
 
   return stream;
 

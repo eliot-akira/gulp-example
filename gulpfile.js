@@ -1,13 +1,15 @@
 
 // Define configuration here
 var config = {
-  assets : {
-    name : 'app',
-    js : {
+  assets: {
+    name: 'app',
+    folder: 'assets',
+    js: {
       //babel : true,
+      //extension: '.es6'
       //coffee : true
     },
-    css : {
+    css: {
       sass : true
     }
   }
@@ -17,6 +19,6 @@ var config = {
 config = require('./gulp/defaults')( config );
 
 // Load tasks
-for (var task of [ 'default', 'css', 'js', 'watch' ]) {
-    require('./gulp/tasks/'+task)( config );
-}
+[ 'default', 'css', 'js', 'watch' ].forEach(function(task) {
+  require('./gulp/tasks/'+task)( config );
+});

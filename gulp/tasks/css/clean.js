@@ -1,11 +1,15 @@
 
 var del = require('del');
 var log = require('../../util/log');
+var path = require('path');
 
 module.exports = function runCleanCSS( options ) {
-  del( [ options.dest+options.slug+'.css', options.dest+options.slug+'.min.css' ] )
+
+  var compiled = path.join(options.dest, options.slug+'.css');
+  var minified = path.join(options.dest, options.slug+'.min.css');
+
+  del([compiled, minified])
     .then( function(){
-      log( 'CSS', 'Removed previous bundle: '+options.dest+options.slug+'.css and '+
-        options.dest+options.slug+'.min.css');
+      log( 'CSS', 'Removed previous bundle: '+compiled+' and '+minified);
     });
 };

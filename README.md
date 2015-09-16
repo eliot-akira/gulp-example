@@ -1,16 +1,22 @@
 # Gulp
 
-Gulp setup with common tasks
+Gulp setup with common tasks for building assets
 
 - [x] Sass
 
-- [x] Browserify, Babel, CoffeeScript
+- [x] Autoprefixer
 
-- [x] Lint JS
+- [x] Browserify
+
+- [x] Babel
+
+- [x] CoffeeScript
+
+- [x] JSHint
 
 - [x] Minify JS and CSS
 
-- [x] Watch files and compile
+- [x] Watch files and build
 
 - [x] Multiple bundles
 
@@ -24,6 +30,10 @@ To do:
 
 - [ ] Optimize images
 
-- [ ] Live reload
-
 - [ ] HTTP server
+
+- [ ] Live reload?
+
+- [ ] [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
+
+- Look into PostCSS, Webpack..

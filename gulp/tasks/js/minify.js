@@ -2,6 +2,8 @@
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var log = require('../../util/log');
+var path = require('path');
+
 
 module.exports = function runMinifyJS( options, dev ) {
 
@@ -41,7 +43,9 @@ module.exports = function runMinifyJS( options, dev ) {
 
   stream = stream
     .pipe( gulp.dest( options.dest ) )
-    .on('end', function(){ log( 'JS', message+' to '+options.dest+options.slug+'.min.js') });
+    .on('end', function(){
+      log( 'JS', message+' to '+path.join(options.dest, options.slug+'.min.js'));
+    });
 
   return stream;
 };
