@@ -1,4 +1,4 @@
-# Gulp
+# Gulp Start
 
 Gulp setup with common tasks for building assets
 
@@ -24,16 +24,18 @@ Gulp setup with common tasks for building assets
 
 To do:
 
-- [ ] Stylus
+- Stylus
 
-- [ ] Jade
+- Jade
 
-- [ ] Optimize images
+- React, JSX
 
-- [ ] HTTP server
+- Optimize images
 
-- [ ] Live reload?
+- Static file server
 
-- [ ] [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
+- BrowserSync, Live reload
+
+- [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
 
 - Look into PostCSS, Webpack..
