@@ -39,3 +39,48 @@ To do:
 - [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
 
 - Look into PostCSS, Webpack..
+
+---
+
+
+## Build
+
+Requirement: [Node.js](https://nodejs.org/) and its included package manager, *npm*
+
+The following commands are run from the root of the project folder.
+
+*Install dependencies*
+
+```sh
+npm install
+```
+
+*Build and minify the resulting file*
+
+```sh
+npm run build
+```
+
+*Build with source maps*
+
+```sh
+npm run dev
+```
+
+*Watch for file changes and automatically build with source maps*
+
+```sh
+npm run watch
+```
+
+*Lint JS files*
+
+```sh
+npm run lint
+```
+
+*Remove compiled files*
+
+```sh
+npm run clean
+```
