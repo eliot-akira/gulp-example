@@ -24,17 +24,19 @@ Gulp setup with common tasks for building assets
 
 - [x] Static file server
 
+- [x] Zip
+
 ---
 
 To do:
 
-- Stylus
-
-- Jade
+- Compress images
 
 - React, JSX
 
-- Optimize images
+- Stylus
+
+- Jade
 
 - [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
 
