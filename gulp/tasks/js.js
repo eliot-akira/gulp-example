@@ -9,33 +9,42 @@ var gulp = require('gulp'),
 
 module.exports = function JSTasks( config ) {
 
-  for (var asset of config.assets) {
+  config.assets.forEach(function(asset) {
 
-    if ( ! asset.js ) continue;
+    if ( ! asset.js ) return;
 
     var slug = asset.js.slug;
 
-    gulp.task('js-clean-'+slug, function() {
-      return action.clean( asset.js );
-    });
-    gulp.task('js-lint-'+slug, function() {
-      if (asset.js.lint) return action.lint( asset.js );
-    });
+    if ( asset.clean ) {
+      gulp.task('js-clean-'+slug, function() {
+        return action.clean( asset.js );
+      });
+      cleaned = ['js-clean-'+slug];
+    } else {
+      cleaned = [];
+    }
 
-    gulp.task('js-compile-'+slug, ['js-clean-'+slug], function() {
+    if (asset.js.lint) {
+      gulp.task('js-lint-'+slug, function() {
+        return action.lint( asset.js );
+      });
+      cleaned.push('js-lint-'+slug);
+    }
+
+    gulp.task('js-compile-'+slug, cleaned, function() {
       return action.compile( asset.js );
     });
     gulp.task('js-min-'+slug, ['js-compile-'+slug], function() {
       return action.minify( asset.js );
     });
 
-    gulp.task('js-dev-compile-'+slug, ['js-lint-'+slug,'js-clean-'+slug], function() {
+    gulp.task('js-dev-compile-'+slug, cleaned, function() {
       return action.compile( asset.js, true );
     });
     gulp.task('js-dev-'+slug, ['js-dev-compile-'+slug], function() {
       return action.minify( asset.js, true );
     });
 
-  }
+  });
 
 };

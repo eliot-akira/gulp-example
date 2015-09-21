@@ -16,7 +16,7 @@ module.exports = function runMinifyJS( options, dev ) {
   if ( ! options.concat ) {
 
     // Just rename
-    stream = stream.pipe( plugins.rename( options.slug+'.min.js' ) );
+    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
 
   } else {
 
@@ -25,7 +25,7 @@ module.exports = function runMinifyJS( options, dev ) {
 
     stream = stream
       .pipe( plugins.concat('combined.js') )
-      .pipe( plugins.rename( options.slug+'.min.js' ) );
+      .pipe( plugins.rename(  options.slug+options.minExtension ) );
 
     if ( dev ) stream = stream.pipe( plugins.sourcemaps.write() );
 
@@ -44,8 +44,13 @@ module.exports = function runMinifyJS( options, dev ) {
   stream = stream
     .pipe( gulp.dest( options.dest ) )
     .on('end', function(){
-      log( 'JS', message+' to '+path.join(options.dest, options.slug+'.min.js'));
+      if ( ! dev || options.slug+options.minExtension !== options.slug+'.js' )
+        log( 'JS', message+' to '+path.join(options.dest, options.slug+options.minExtension));
     });
+
+  if (options.browserSync) {
+    stream = stream.pipe( options.browserSyncInstance.stream() );
+  }
 
   return stream;
 };

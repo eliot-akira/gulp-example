@@ -9,6 +9,7 @@ module.exports = function runCompileCSS( options, dev ) {
   dev = (typeof dev !== 'undefined') ? dev : false;
 
   var entry = path.join(options.src, options.entry+options.extension);
+  var logTag = 'CSS';
 
   var stream = gulp.src( entry )
     .pipe(plugins.plumber());
@@ -19,6 +20,7 @@ module.exports = function runCompileCSS( options, dev ) {
       stream = stream.pipe(
         plugins.sass( options.sass ).on('error', plugins.sass.logError)
       );
+      logTag = 'Sass';
     }
 
     if ( options.autoprefix ) {
@@ -31,7 +33,7 @@ module.exports = function runCompileCSS( options, dev ) {
       .pipe( plugins.rename( options.slug+'.css' ) )
       .pipe( gulp.dest( options.dest ) )
       .on('end', function() {
-        log( 'Sass', 'Compiled with'+(dev?'':'out')+' source map: from '+
+        log( logTag, 'Compiled with'+(dev?'':'out')+' source map from '+
           entry+' to '+path.join(options.dest, options.slug+'.css'));
       });
 

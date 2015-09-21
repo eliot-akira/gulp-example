@@ -5,12 +5,14 @@ var path = require('path');
 
 module.exports = function runCleanJS( options ) {
 
-  if ( ! options.clean ) return;
-
+  var files;
   var compiled = path.join(options.dest, options.slug+'.js');
-  var minified = path.join(options.dest, options.slug+'.min.js');
+  var minified = path.join(options.dest, options.slug+options.minExtension);
 
-  del([compiled, minified])
+  if (compiled==minified) files = [minified];
+  else files = [compiled, minified];
+
+  del(files)
     .then( function(){
       log( 'JS', 'Removed previous bundle: '+compiled+' and '+minified);
     });

@@ -16,7 +16,7 @@ module.exports = function runMinifyCSS( options, dev ) {
   if ( ! options.concat ) {
 
     // Just rename
-    stream = stream.pipe( plugins.rename( options.slug+'.min.css' ) );
+    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
 
   } else {
 
@@ -27,7 +27,7 @@ module.exports = function runMinifyCSS( options, dev ) {
 
     if ( dev ) stream = stream.pipe( plugins.sourcemaps.write() );
 
-    stream = stream.pipe( plugins.rename( options.slug+'.min.css' ) );
+    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
 
     message = 'Combined and '+message.toLowerCase();
   }
@@ -50,8 +50,14 @@ module.exports = function runMinifyCSS( options, dev ) {
   stream = stream
     .pipe( gulp.dest( options.dest ) )
     .on('end', function(){
-      log( 'CSS', message+' to '+path.join(options.dest, options.slug+'.min.css'));
+      if ( ! dev || options.slug+options.minExtension !== options.slug+'.css' )
+        log( 'CSS', message+' to '+path.join(options.dest, options.slug+options.minExtension));
     });
+
+
+  if (options.browserSync) {
+    stream = stream.pipe( options.browserSyncInstance.stream() );
+  }
 
   return stream;
 

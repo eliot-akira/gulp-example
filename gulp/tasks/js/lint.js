@@ -6,8 +6,8 @@ module.exports = function runJSHint( options ) {
 
   if ( ! options.lint ) return;
 
-  bundle = gulp.src( options.lint )
-    .pipe( plugins.cache('linting') );
+  bundle = gulp.src( options.lint );
+//    .pipe( plugins.cache('linting') );
 
   if ( options.coffee ) {
     bundle = bundle

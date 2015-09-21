@@ -3,22 +3,20 @@
 var config = {
   assets: {
     name: 'app',
-    folder: 'assets',
+    src: 'src',
+    dest: 'public',
     js: {
       //babel : true,
       //extension: '.es6'
       //coffee : true
     },
     css: {
-      sass : true
+      sass : true,
     }
+  },
+  browserSync: {
+    server: './public'
   }
 };
 
-// Load defaults
-config = require('./gulp/defaults')( config );
-
-// Load tasks
-[ 'default', 'css', 'js', 'watch' ].forEach(function(task) {
-  require('./gulp/tasks/'+task)( config );
-});
+require('./gulp/launch')( config );

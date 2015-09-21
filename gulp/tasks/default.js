@@ -1,12 +1,18 @@
 var gulp = require('gulp'),
     log = require('../util/log'),
+    path = require('path'),
     allTasks = [],
     cssTasks = [], cssDevTasks = [],
     jsTasks = [], jsDevTasks = [], cleanTasks = [],
     lintTasks = [], imgTasks = [], zipTasks = [],
-    task = '';
+    task = '',
+    browserSync;
 
 module.exports = function defaultTasks( config ) {
+
+  if (config.browserSync) {
+    browserSync = require('browser-sync').create();
+  }
 
   for (var asset of config.assets) {
 
@@ -15,8 +21,10 @@ module.exports = function defaultTasks( config ) {
       allTasks.push(task);
       cssTasks.push(task);
       cssDevTasks.push('css-dev-'+asset.css.slug);
-      cleanTasks.push('css-clean-'+asset.css.slug);
-      lintTasks.push('css-lint-'+asset.css.slug);
+      if ( asset.css.clean ) cleanTasks.push('css-clean-'+asset.css.slug);
+      if ( asset.css.lint ) lintTasks.push('css-lint-'+asset.css.slug);
+
+      if (config.browserSync) asset.css.browserSyncInstance = browserSync;
     }
 
     if ( asset.js ) {
@@ -24,8 +32,10 @@ module.exports = function defaultTasks( config ) {
       allTasks.push(task);
       jsTasks.push(task);
       jsDevTasks.push('js-dev-'+asset.js.slug);
-      cleanTasks.push('js-clean-'+asset.css.slug);
-      lintTasks.push('js-lint-'+asset.js.slug);
+      if ( asset.js.clean ) cleanTasks.push('js-clean-'+asset.css.slug);
+      if ( asset.js.lint ) lintTasks.push('js-lint-'+asset.js.slug);
+
+      if (config.browserSync) asset.js.browserSyncInstance = browserSync;
     }
 
     if ( asset.image ) {
@@ -63,5 +73,22 @@ module.exports = function defaultTasks( config ) {
   gulp.task('dev', devTasks);
 
   gulp.task('default', allTasks);
+
+  if (config.browserSync) {
+
+    gulp.task('serve', devTasks, function() {
+        browserSync.use({
+          plugin: function () { /* noop */ },
+          hooks: {
+              'client:js': require('fs').readFileSync(
+                path.join(__dirname, '../util/closer.js'), 'utf-8'
+              )
+          }
+        });
+        browserSync.init( config.browserSync );
+        gulp.start('watch');
+        gulp.watch(config.browserSync.watch).on('change', browserSync.reload);
+    });
+  }
 
 };

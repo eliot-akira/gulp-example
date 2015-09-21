@@ -9,14 +9,44 @@ module.exports = function setAllDefaults( config ) {
 
   if ( ! Array.isArray(config.assets) ) config.assets = [ config.assets ];
 
-  config.globalIgnore = '!{**/_*,**/_*/**}'; // Exclude everything starting with _
+  config.tasks = [ 'default', 'watch' ];
+
+  config.globalIgnore = '!{**/_unused*,**/_unused*/**}';
+
+  config.min = setDefault.value( config.min, '' ); // '.min'
+
+  config.browserSync = setDefault.booleanObject( config.browserSync, false, {
+    server: './public',
+    injectChanges: true,
+    //logLevel: "debug",
+    minify: false,
+    browser: ["google chrome"]
+  });
+
+  if (config.browserSync) {
+    config.browserSync = setDefault.props(config.browserSync, {
+      watch: path.join(config.browserSync.server, '*.html'),
+      notify: false
+    });
+  }
+
+  /*---------------------------------------------
+   *
+   * Set defaults for all assets
+   *
+   */
 
   config.assets.forEach( function(asset) {
 
     if ( asset.name ) asset.name = slug( asset.name );
     else asset.name = 'app'+( index++ == 1 ? '' : index );
 
-    asset.folder = setDefault.value( asset.folder, './' );
+    asset.folder = asset.folder || './';
+    asset = setDefault.props( asset, {
+      src: path.join(asset.folder, 'src'),
+      dest: path.join(asset.folder, 'public'),
+      min: config.min
+    });
 
     /*---------------------------------------------
      *
@@ -26,20 +56,18 @@ module.exports = function setAllDefaults( config ) {
 
     if ( asset.css ) {
 
+      config.tasks = setDefault.inArray(config.tasks, 'css');
+
       if ( typeof asset.css === 'boolean' ) asset.css = {};
 
       asset.css = setDefault.props( asset.css, {
         slug: asset.name || 'style',
-        folder: path.join(asset.folder, 'css')
-      });
-
-      asset.css = setDefault.props( asset.css, {
-        src: path.join(asset.css.folder, 'src'),
-        dest: asset.css.folder,
+        src: path.join(asset.src, 'css'),
+        dest: path.join(asset.dest, 'css'),
         sass: true,
         entry: 'index',
         autoprefix: true,
-        clean: true
+        clean: false // Remove previous bundle
       });
 
       if ( asset.css.files ) {
@@ -63,6 +91,8 @@ module.exports = function setAllDefaults( config ) {
         asset.css.extension = setDefault.value( asset.css.extension, '.css' );
       }
 
+      asset.css.minExtension = asset.min+'.css';
+
       asset.css.autoprefix = setDefault.booleanObject( asset.css.autoprefix, true, {
         browsers: ['last 2 versions', 'ie 9', '> 1%'],
         cascade: false
@@ -72,6 +102,10 @@ module.exports = function setAllDefaults( config ) {
         path.join(asset.css.src, '**/*' + asset.css.extension)
       );
       if ( asset.css.watch ) asset.css.watch.push( config.globalIgnore );
+
+      if ( config.browserSync ) {
+        asset.css.browserSync = asset.css.browserSync || true;
+      }
     }
 
     /*---------------------------------------------
@@ -82,19 +116,17 @@ module.exports = function setAllDefaults( config ) {
 
     if ( asset.js ) {
 
+      config.tasks = setDefault.inArray(config.tasks, 'js');
+
       if ( typeof asset.js === 'boolean' ) asset.js = {};
 
       asset.js = setDefault.props( asset.js, {
         slug: asset.name || 'script',
-        folder: path.join(asset.folder, 'js')
-      });
-
-      asset.js = setDefault.props( asset.js, {
-        src: path.join(asset.js.folder, 'src'),
-        dest: asset.js.folder,
+        src: path.join(asset.src, 'js'),
+        dest: path.join(asset.dest, 'js'),
         browserify: true,
         entry: 'index',
-        clean: true
+        clean: false // Remove previous bundle
       });
 
       if ( asset.js.files ) {
@@ -113,6 +145,8 @@ module.exports = function setAllDefaults( config ) {
         setDefault.value( asset.js.extension, '.coffee' ) :
         setDefault.value( asset.js.extension, '.js' );
 
+      asset.js.minExtension = asset.min+'.js';
+
       asset.js.lint = setDefault.booleanArray( asset.js.lint, true,
         path.join(asset.js.src, '**/*' + asset.js.extension)
       );
@@ -121,12 +155,14 @@ module.exports = function setAllDefaults( config ) {
         config.globalIgnore
       );
 
-      // Watch
-
       asset.js.watch = setDefault.booleanArray( asset.js.watch, true,
         path.join(asset.js.src, '**/*' + asset.js.extension)
       );
       if ( asset.js.watch ) asset.js.watch.push( config.globalIgnore );
+
+      if ( config.browserSync ) {
+        asset.js.browserSync = asset.js.browserSync || true;
+      }
     }
 
 
@@ -140,11 +176,13 @@ module.exports = function setAllDefaults( config ) {
 
     if ( asset.images ) {
 
+      config.tasks = setDefault.inArray(config.tasks, 'image');
+
       if ( typeof asset.images === 'boolean' ) asset.images = {};
 
       asset.images = setDefault.props( asset.images, {
-        src: asset.folder,
-        dest: asset.folder,
+        src: path.join(asset.src, 'img'),
+        dest: path.join(asset.dest, 'img'),
         options: {}
       });
     }
@@ -157,6 +195,8 @@ module.exports = function setAllDefaults( config ) {
      */
 
     if ( asset.zip ) {
+
+      config.tasks = setDefault.inArray(config.tasks, 'zip');
 
       if ( typeof asset.zip === 'boolean' ) asset.zip = {};
 

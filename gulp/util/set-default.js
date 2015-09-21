@@ -29,6 +29,16 @@ module.exports = {
     return target;
   },
 
+  inArray: function( target, elements ) {
+
+    target = target || [];
+    elements = Array.isArray( elements ) ? elements : [ elements ];
+    elements.forEach(function(element) {
+      if (target.indexOf(element)<0) target.push(element);
+    });
+    return target;
+  },
+
   booleanArray: function( target, defaultBoolean, defaultArray ) {
 
     target = typeof target !== 'undefined' ? target : defaultBoolean;

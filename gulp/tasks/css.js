@@ -8,25 +8,29 @@ var gulp = require('gulp'),
 
 module.exports = function CSSTasks( config ) {
 
-  for (var asset of config.assets) {
+  config.assets.forEach(function(asset) {
 
-    if ( ! asset.css ) continue;
+    if ( ! asset.css ) return;
 
     var slug = asset.css.slug;
+    var cleaned;
 
-    // Remove old bundle
-    gulp.task('css-clean-'+slug, function() {
-      return action.clean( asset.css );
-    });
+    // TODO: Lint task
 
-    // Lint here
-
+    if ( asset.clean ) {
+      gulp.task('css-clean-'+slug, function() {
+        return action.clean( asset.css );
+      });
+      cleaned = ['css-clean-'+slug];
+    } else {
+      cleaned = [];
+    }
 
     // Compile Sass, etc.
-    gulp.task('css-compile-'+slug, ['css-clean-'+slug], function() {
+    gulp.task('css-compile-'+slug, cleaned, function() {
       return action.compile( asset.css );
     });
-    gulp.task('css-compile-dev-'+slug, ['css-clean-'+slug], function() {
+    gulp.task('css-compile-dev-'+slug, cleaned, function() {
       return action.compile( asset.css, true );
     });
 
@@ -38,6 +42,6 @@ module.exports = function CSSTasks( config ) {
       return action.minify( asset.css, true );
     });
 
-  }
+  });
 
 };

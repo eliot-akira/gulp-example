@@ -17,6 +17,7 @@ module.exports = function runCompileJS( options, dev ) {
   dev = typeof dev !== 'undefined' ? dev : false;
 
   var entry = path.join(options.src, options.entry+options.extension);
+  var logTag = 'Browserify';
 
   var bundle = browserify( setDefault.props( options.browserify, {
     entries: entry,
@@ -32,9 +33,11 @@ module.exports = function runCompileJS( options, dev ) {
     var babelify = require('babelify');
 
     bundle = bundle.transform( babelify.configure( options.babelOptions || {} ) );
+    logTag += '/Babel';
 
   } else if ( options.coffee ) {
     bundle = bundle.transform( 'coffeeify' );
+    logTag += '/Coffee';
   }
 
   bundle = bundle.bundle();
@@ -49,7 +52,7 @@ module.exports = function runCompileJS( options, dev ) {
     .pipe( buffer() ) // Browserify -> gulp stream
     .pipe( gulp.dest( options.dest ) )
     .on('end', function(){
-      log( 'Browserify', 'Compiled with'+(dev?'':'out')+' sourcemap: from '+
+      log( logTag, 'Compiled with'+(dev?'':'out')+' sourcemap from '+
         entry+' to '+path.join(options.dest, options.slug+'.js'));
     });
 
