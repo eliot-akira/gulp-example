@@ -76,7 +76,7 @@ module.exports = function defaultTasks( config ) {
 
   if (config.browserSync) {
 
-    gulp.task('serve', devTasks, function() {
+    gulp.task('serve', [], function() {
         browserSync.use({
           plugin: function () { /* noop */ },
           hooks: {

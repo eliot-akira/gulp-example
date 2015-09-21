@@ -25,9 +25,9 @@ module.exports = function runMinifyCSS( options, dev ) {
 
     stream = stream.pipe( plugins.concat( options.slug+'.css' ) );
 
-    if ( dev ) stream = stream.pipe( plugins.sourcemaps.write() );
-
     stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
+
+    if ( dev ) stream = stream.pipe( plugins.sourcemaps.write());
 
     message = 'Combined and '+message.toLowerCase();
   }

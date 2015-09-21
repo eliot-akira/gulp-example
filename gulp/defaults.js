@@ -20,7 +20,8 @@ module.exports = function setAllDefaults( config ) {
     injectChanges: true,
     //logLevel: "debug",
     minify: false,
-    browser: ["google chrome"]
+    open: false,
+    browser: ['firefox'] // google chrome no good when editing style in inspector
   });
 
   if (config.browserSync) {
@@ -45,7 +46,8 @@ module.exports = function setAllDefaults( config ) {
     asset = setDefault.props( asset, {
       src: path.join(asset.folder, 'src'),
       dest: path.join(asset.folder, 'public'),
-      min: config.min
+      min: config.min,
+      lint: false
     });
 
     /*---------------------------------------------
@@ -147,7 +149,8 @@ module.exports = function setAllDefaults( config ) {
 
       asset.js.minExtension = asset.min+'.js';
 
-      asset.js.lint = setDefault.booleanArray( asset.js.lint, true,
+      asset.js.lint = setDefault.value(asset.js.lint, asset.lint);
+      asset.js.lint = setDefault.booleanArray( asset.js.lint, false,
         path.join(asset.js.src, '**/*' + asset.js.extension)
       );
       if ( asset.js.lint ) asset.js.lint.push(
