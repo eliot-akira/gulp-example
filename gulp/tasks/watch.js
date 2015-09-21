@@ -1,6 +1,6 @@
 
 var gulp = require('gulp'),
-		watch    = require('gulp-watch'),
+		watch = require('gulp-watch'),
   	log = require('../util/log');
 
 module.exports = function watchTasks( config ) {
@@ -13,7 +13,7 @@ module.exports = function watchTasks( config ) {
 
 	    if ( asset.css && asset.css.watch ) {
 	      log( 'Watching', 'css-dev-'+asset.css.slug);
-	      gulp.watch( asset.css.watch, function () {
+	      watch( asset.css.watch, function () {
 	        log( 'Changed', 'css-dev-'+asset.css.slug);
 	        gulp.start( ['css-dev-'+asset.css.slug] );
 	      });
@@ -21,7 +21,7 @@ module.exports = function watchTasks( config ) {
 
 	    if ( asset.js && asset.js.watch ) {
 	      log( 'Watching', 'js-dev-'+asset.js.slug);
-	      gulp.watch( asset.js.watch, function () {
+	      watch( asset.js.watch, function () {
 	        log( 'Changed', 'js-dev-'+asset.js.slug);
 	        gulp.start( ['js-dev-'+asset.js.slug] );
 	      });
