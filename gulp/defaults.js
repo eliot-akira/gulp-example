@@ -204,7 +204,7 @@ module.exports = function setAllDefaults( config ) {
       if ( typeof asset.zip === 'boolean' ) asset.zip = {};
 
       asset.zip = setDefault.props( asset.zip, {
-        slug: asset.name,
+        slug: asset.zip.name || asset.name,
         src: asset.folder,
         dest: asset.folder
       });
@@ -212,7 +212,7 @@ module.exports = function setAllDefaults( config ) {
       asset.zip.files = setDefault.array( asset.zip.files,
         path.join(asset.zip.src, '**/**/*')
       );
-      asset.zip.files.concat([
+      asset.zip.files = asset.zip.files.concat([
         '!**/*.zip',
         '!**/.git/**/*',
         '!**/.gitignore',

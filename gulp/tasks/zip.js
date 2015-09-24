@@ -10,7 +10,7 @@ module.exports = function zipTasks( config ) {
 
     if ( ! asset.zip ) continue;
 
-    gulp.task('zip-'+asset.slug, function() {
+    gulp.task('zip-'+asset.zip.slug, function() {
       return runZip( asset.zip.slug, asset.zip.src, asset.zip.dest, asset.zip.files );
     });
   }
@@ -18,6 +18,7 @@ module.exports = function zipTasks( config ) {
 
 
 function runZip( slug, src, dest, files ) {
+
   return gulp.src( files, {
     base : '../' // Important
   })

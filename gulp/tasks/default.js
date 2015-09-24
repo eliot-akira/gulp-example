@@ -39,13 +39,13 @@ module.exports = function defaultTasks( config ) {
     }
 
     if ( asset.image ) {
-      task = 'image-min-'+asset.slug;
+      task = 'image-min-'+asset.asset.image.slug;
       allTasks.push(task);
       imgTasks.push(task);
     }
 
     if ( asset.zip ) {
-      task = 'zip-'+asset.slug;
+      task = 'zip-'+asset.zip.slug;
       allTasks.push(task);
       zipTasks.push(task);
     }
