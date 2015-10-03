@@ -33,11 +33,11 @@ module.exports = function runCompileJS( options, dev ) {
     var babelify = require('babelify');
 
     bundle = bundle.transform( babelify.configure( options.babelOptions || {} ) );
-    logTag += '/Babel';
+    logTag = 'Babelify';
 
   } else if ( options.coffee ) {
     bundle = bundle.transform( 'coffeeify' );
-    logTag += '/Coffee';
+    logTag = 'Coffeeify';
   }
 
   bundle = bundle.bundle();

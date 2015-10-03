@@ -8,7 +8,7 @@ Gulp setup with common tasks for building assets
 
 - [x] Browserify
 
-- [x] Babel
+- [x] Babel, JSX
 
 - [x] CoffeeScript
 
@@ -30,9 +30,11 @@ Gulp setup with common tasks for building assets
 
 To do:
 
+- More efficient streams with conditions
+
 - Compress images
 
-- React, JSX
+- Nodemon
 
 - Stylus
 
