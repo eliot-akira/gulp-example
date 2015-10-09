@@ -99,7 +99,7 @@ module.exports = function defaultTasks( config ) {
             browserSync.reload({
               stream: false
             });
-          }, config.nodemon.delay || 2000);
+          }, config.nodemon.delay || 1000);
         })
         // Prevent error from stopping watch
         .on('error', function(err){
@@ -113,7 +113,10 @@ module.exports = function defaultTasks( config ) {
 
     gulp.task('serve', config.nodemon ? ['nodemon'] : [], function() {
 
-      if ( ! config.nodemon ) {
+      if ( config.nodemon ) {
+        browserSync.init( config.browserSync );
+        gulp.start('watch');
+      } else {
         browserSync.use({
           plugin: function () { // noop
           },
@@ -123,10 +126,17 @@ module.exports = function defaultTasks( config ) {
             )
           }
         });
+        browserSync.init( config.browserSync );
+        gulp.start('watch');
+        if ( config.browserSync.watch ) {
+          log('BrowserSync', 'Watching for file changes', config.browserSync.watch);
+          gulp.watch(config.browserSync.watch).on('change', function() {
+            setTimeout(function() {
+              browserSync.reload();
+            }, 500);
+          });
+        }
       }
-      browserSync.init( config.browserSync );
-      gulp.start('watch');
-      gulp.watch(config.browserSync.watch).on('change', browserSync.reload);
     });
   }
 

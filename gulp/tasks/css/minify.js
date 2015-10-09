@@ -1,5 +1,6 @@
 
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
 var plugins = require('gulp-load-plugins')();
 var log = require('../../util/log');
 var path = require('path');
@@ -7,39 +8,27 @@ var setDefault = require('../../util/set-default.js');
 
 module.exports = function runMinifyCSS( options, dev ) {
 
-  var stream = gulp.src( options.files );
-  var message;
-
   dev = (typeof dev !== 'undefined') ? dev : false;
-  message = dev ? 'Renamed' : 'Minified';
+  var message = dev ? 'Renamed' : 'Minified';
 
-  if ( ! options.concat ) {
+  var stream = gulp.src( options.files );
 
-    // Just rename
-    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
+  if ( options.concat ) {
 
-  } else {
-
-    // Combine
-    if ( dev ) stream = stream.pipe( plugins.sourcemaps.init({ loadMaps: true }) );
-
-    stream = stream.pipe( plugins.concat( options.slug+'.css' ) );
-
-    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
-
-    if ( dev ) stream = stream.pipe( plugins.sourcemaps.write());
+    stream = stream
+      .pipe( gulpif( dev, plugins.sourcemaps.init({ loadMaps: true }) ) )
+      .pipe( plugins.concat( options.slug+'.css' ) )
+      .pipe( plugins.rename( options.slug+options.minExtension ) )
+      .pipe( gulpif( dev, plugins.sourcemaps.write() ) );
 
     message = 'Combined and '+message.toLowerCase();
+
+  } else {
+    // Just rename
+    stream = stream.pipe( plugins.rename( options.slug+options.minExtension ) );
   }
 
   if ( ! dev ) {
-
-    options.minify = setDefault.props( options.minify, {
-      keepSpecialComments : false,
-      relativeTo : options.dest,
-      processImport: false
-    });
-
     // Minify in production
     stream = stream
       .pipe( plugins.bytediff.start() )
@@ -51,7 +40,9 @@ module.exports = function runMinifyCSS( options, dev ) {
     .pipe( gulp.dest( options.dest ) )
     .on('end', function(){
       if ( ! dev || options.slug+options.minExtension !== options.slug+'.css' )
-        log( 'CSS', message+' to '+path.join(options.dest, options.slug+options.minExtension));
+        log( 'CSS', message + ' to ' +
+          path.join(options.dest, options.slug+options.minExtension)
+        );
     });
 
 
@@ -60,5 +51,4 @@ module.exports = function runMinifyCSS( options, dev ) {
   }
 
   return stream;
-
 };

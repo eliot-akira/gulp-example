@@ -15,7 +15,7 @@ module.exports = function setAllDefaults( config ) {
 
   config.min = setDefault.value( config.min, '' ); // '.min'
 
-  if (config.browserSync) {
+  if ( config.browserSync ) {
 
     browserSyncDefaults = {
       injectChanges: true,
@@ -27,13 +27,15 @@ module.exports = function setAllDefaults( config ) {
     };
 
     if ( config.nodemon ) {
+
       config.nodemon = setDefault.booleanObject(config.nodemon, false, {
         script: 'server.js',
         watch: ['server.js', './server/**/*'],
-        delay: 1700 // delay before browserSync.reload
+        delay: '800' // delay before browserSync.reload
       });
       browserSyncDefaults.proxy = 'http://localhost:3000';
       browserSyncDefaults.port = 4000;
+
     } else {
 
       // Static file server
@@ -83,7 +85,7 @@ module.exports = function setAllDefaults( config ) {
         slug: asset.name || 'style',
         src: path.join(asset.src, 'css'),
         dest: path.join(asset.dest, 'css'),
-        sass: true,
+        sass: config.sass || true,
         entry: 'index',
         autoprefix: true,
         clean: false // Remove previous bundle
@@ -111,6 +113,12 @@ module.exports = function setAllDefaults( config ) {
       }
 
       asset.css.minExtension = asset.min+'.css';
+
+      asset.css.minify = setDefault.props( asset.css.minify, {
+        keepSpecialComments : false,
+        relativeTo : asset.js.dest,
+        processImport: false
+      });
 
       asset.css.autoprefix = setDefault.booleanObject( asset.css.autoprefix, true, {
         browsers: ['last 2 versions', 'ie 9', '> 1%'],

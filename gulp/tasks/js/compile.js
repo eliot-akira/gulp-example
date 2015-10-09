@@ -1,4 +1,3 @@
-
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var log = require('../../util/log');
@@ -14,17 +13,17 @@ var buffer = require('vinyl-buffer');
 
 module.exports = function runCompileJS( options, dev ) {
 
-  dev = typeof dev !== 'undefined' ? dev : false;
+  dev = setDefault.value( dev, false );
 
   var entry = path.join(options.src, options.entry+options.extension);
   var logTag = 'Browserify';
 
-  var bundle = browserify( setDefault.props( options.browserify, {
+  var stream = browserify( setDefault.props( options.browserify, {
     entries: entry,
-    debug: dev // Sourcemap
+    debug: dev, // Sourcemap
     // cache: {}, packageCache: {},
     // fullPaths: true,
-    // extensions: options.extension,
+    extensions: options.extension
     // paths: ['./node_modules', options.src]
   }));
 
@@ -32,22 +31,22 @@ module.exports = function runCompileJS( options, dev ) {
 
     var babelify = require('babelify');
 
-    bundle = bundle.transform( babelify.configure( options.babelOptions || {} ) );
+    stream = stream.transform( babelify.configure( options.babelOptions || {} ) );
     logTag = 'Babelify';
 
   } else if ( options.coffee ) {
-    bundle = bundle.transform( 'coffeeify' );
+    stream = stream.transform( 'coffeeify' );
     logTag = 'Coffeeify';
   }
 
-  bundle = bundle.bundle();
+  stream = stream.bundle();
 
-  if ( dev ) bundle = bundle.on('error', function(err){ // Prevent error from stopping watch
+  if ( dev ) stream = stream.on('error', function(err){ // Prevent error from stopping watch
     console.log(err.message);
     this.emit("end"); // Keep stream going
   });
 
-  bundle = bundle
+  stream = stream
     .pipe( source( options.slug+'.js' ) )
     .pipe( buffer() ) // Browserify -> gulp stream
     .pipe( gulp.dest( options.dest ) )
@@ -56,5 +55,5 @@ module.exports = function runCompileJS( options, dev ) {
         entry+' to '+path.join(options.dest, options.slug+'.js'));
     });
 
-  return bundle;
+  return stream;
 };
