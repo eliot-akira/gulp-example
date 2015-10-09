@@ -15,21 +15,38 @@ module.exports = function setAllDefaults( config ) {
 
   config.min = setDefault.value( config.min, '' ); // '.min'
 
-  config.browserSync = setDefault.booleanObject( config.browserSync, false, {
-    server: './public',
-    injectChanges: true,
-    //logLevel: "debug",
-    minify: false,
-    open: false,
-    browser: ['firefox'] // google chrome no good when editing style in inspector
-  });
-
   if (config.browserSync) {
-    config.browserSync = setDefault.props(config.browserSync, {
-      watch: path.join(config.browserSync.server, '*.html'),
+
+    browserSyncDefaults = {
+      injectChanges: true,
+      //logLevel: "debug",
+      minify: false,
+      open: false,
+      browser: ['firefox'], // google chrome no good when editing style in inspector
       notify: false
-    });
+    };
+
+    if ( config.nodemon ) {
+      config.nodemon = setDefault.booleanObject(config.nodemon, false, {
+        script: 'server.js',
+        watch: ['server.js', './server/**/*'],
+        delay: 1700 // delay before browserSync.reload
+      });
+      browserSyncDefaults.proxy = 'http://localhost:3000';
+      browserSyncDefaults.port = 4000;
+    } else {
+
+      // Static file server
+      config.browserSync.server = setDefault.value(config.browserSync.server, './public');
+      browserSyncDefaults.watch = path.join(config.browserSync.server, '*.html');
+    }
+
+    config.browserSync = setDefault.props(
+      config.browserSync, browserSyncDefaults
+    );
   }
+
+
 
   /*---------------------------------------------
    *
@@ -103,7 +120,10 @@ module.exports = function setAllDefaults( config ) {
       asset.css.watch = setDefault.booleanArray( asset.css.watch, true,
         path.join(asset.css.src, '**/*' + asset.css.extension)
       );
-      if ( asset.css.watch ) asset.css.watch.push( config.globalIgnore );
+      if ( asset.css.watch ) {
+        if ( asset.css.sass ) asset.css.watch.push( path.join(asset.css.src, '**/*.css') );
+        asset.css.watch.push( config.globalIgnore );
+      }
 
       if ( config.browserSync ) {
         asset.css.browserSync = asset.css.browserSync || true;
@@ -158,10 +178,19 @@ module.exports = function setAllDefaults( config ) {
         config.globalIgnore
       );
 
+      if ( config.browserify ) {
+        asset.js.browserify = setDefault.booleanObject(
+          asset.js.browserify, true, config.browserify
+        );
+      }
+
       asset.js.watch = setDefault.booleanArray( asset.js.watch, true,
         path.join(asset.js.src, '**/*' + asset.js.extension)
       );
-      if ( asset.js.watch ) asset.js.watch.push( config.globalIgnore );
+      if ( asset.js.watch ) {
+        if ( asset.js.coffee ) asset.js.watch.push( path.join(asset.js.src, '**/*.js') );
+        asset.js.watch.push( config.globalIgnore );
+      }
 
       if ( config.browserSync ) {
         asset.js.browserSync = asset.js.browserSync || true;

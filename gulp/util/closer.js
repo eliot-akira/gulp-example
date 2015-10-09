@@ -10,7 +10,7 @@
 })(window, document, ___browserSync___);
 */
 
-// Reload window on disconnect
+// Reload window on reconnect
 (function ($window, $document, bs) {
 
     var socket = bs.socket;

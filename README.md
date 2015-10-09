@@ -2,17 +2,9 @@
 
 Gulp setup with common tasks for building assets
 
-- [x] Sass
+- [x] Sass, Autoprefixer
 
-- [x] Autoprefixer
-
-- [x] Browserify
-
-- [x] Babel, JSX
-
-- [x] CoffeeScript
-
-- [x] JSHint
+- [x] Browserify, Babel, JSX, CoffeeScript, JSHint
 
 - [x] Minify JS and CSS
 
@@ -20,9 +12,7 @@ Gulp setup with common tasks for building assets
 
 - [x] Multiple bundles
 
-- [x] BrowserSync
-
-- [x] Static file server
+- [x] BrowserSync with Nodemon or static file server
 
 - [x] Zip
 
@@ -34,11 +24,7 @@ To do:
 
 - Compress images
 
-- Nodemon
-
-- Stylus
-
-- Jade
+- Stylus, Jade
 
 - [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
 

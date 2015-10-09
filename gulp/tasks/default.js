@@ -6,15 +6,18 @@ var gulp = require('gulp'),
     jsTasks = [], jsDevTasks = [], cleanTasks = [],
     lintTasks = [], imgTasks = [], zipTasks = [],
     task = '',
-    browserSync;
+    browserSync, nodemon;
 
 module.exports = function defaultTasks( config ) {
 
   if (config.browserSync) {
     browserSync = require('browser-sync').create();
   }
+  if (config.nodemon) {
+    nodemon = require('gulp-nodemon');
+  }
 
-  for (var asset of config.assets) {
+  config.assets.forEach(function(asset) {
 
     if ( asset.css ) {
       task = 'css-min-'+asset.css.slug;
@@ -50,7 +53,7 @@ module.exports = function defaultTasks( config ) {
       zipTasks.push(task);
     }
 
-  } // End for asset of config.assets
+  }); // End for each asset of config.assets
 
   var devTasks = [];
 
@@ -74,20 +77,56 @@ module.exports = function defaultTasks( config ) {
 
   gulp.task('default', allTasks);
 
+
+
+  if (config.nodemon) {
+
+    gulp.task('nodemon', function (cb) {
+
+    	var called = false;
+
+    	return nodemon( config.nodemon )
+        // prevent calling more than once
+        .on('start', function () {
+      		if (!called) {
+      			called = true;
+      			cb();
+      		}
+  	    })
+        .on('restart', function onRestart() {
+          // reload connected browsers after a slight delay
+          setTimeout(function reload() {
+            browserSync.reload({
+              stream: false
+            });
+          }, config.nodemon.delay || 2000);
+        })
+        // Prevent error from stopping watch
+        .on('error', function(err){
+          console.log(err.message);
+          this.emit('end');
+        });
+    });
+  }
+
   if (config.browserSync) {
 
-    gulp.task('serve', [], function() {
+    gulp.task('serve', config.nodemon ? ['nodemon'] : [], function() {
+
+      if ( ! config.nodemon ) {
         browserSync.use({
-          plugin: function () { /* noop */ },
+          plugin: function () { // noop
+          },
           hooks: {
-              'client:js': require('fs').readFileSync(
-                path.join(__dirname, '../util/closer.js'), 'utf-8'
-              )
+            'client:js': require('fs').readFileSync(
+              path.join(__dirname, '../util/closer.js'), 'utf-8'
+            )
           }
         });
-        browserSync.init( config.browserSync );
-        gulp.start('watch');
-        gulp.watch(config.browserSync.watch).on('change', browserSync.reload);
+      }
+      browserSync.init( config.browserSync );
+      gulp.start('watch');
+      gulp.watch(config.browserSync.watch).on('change', browserSync.reload);
     });
   }
 
