@@ -1,4 +1,4 @@
 
 require('./test')()
 
-console.log 'Hey'
+console.log 'Hello from index.coffee'
