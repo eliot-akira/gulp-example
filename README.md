@@ -4,7 +4,7 @@ Gulp setup with common tasks for building assets
 
 - [x] Sass, Autoprefixer
 
-- [x] Browserify, Babel, JSX, CoffeeScript, JSHint
+- [x] Browserify, Babel, React/JSX, CoffeeScript, JSHint
 
 - [x] Minify JS and CSS
 
@@ -20,18 +20,19 @@ Gulp setup with common tasks for building assets
 
 To do:
 
-- More efficient streams with conditions
+- Prepare for Gulp 4 with task series and parallel
 
-- Compress images
+- Optional CoffeeScript version
+
+- Optimize images
 
 - Stylus, Jade
 
-- [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)
+- [Strip debug/console statements](https://github.com/sindresorhus/gulp-strip-debug)?
 
 - PostCSS, Webpack?
 
 ---
-
 
 ## Build
 
@@ -81,4 +82,52 @@ npm run lint
 
 ```sh
 npm run clean
+```
+
+
+---
+
+## Configure
+
+Edit configuration in *gulpfile.js*. See below some optional settings.
+
+```javascript
+var config = {
+
+  // Assets are defined as object or array of objects for multiple bundles
+  assets: {
+
+    name: 'app',
+    src: 'src',
+    dest: 'public',
+
+    js: {
+      src: 'src/js',
+      dest: 'public/js',
+      lint: false,
+      babel : false,
+      extension: '.js', // .coffee, .es6, .jsx..
+      coffee : false
+    },
+
+    css: {
+      sass : true
+      autoprefixer: {
+        ...
+      }
+    }
+  },
+
+  // Static file server
+  browserSync: {
+    server: './public'
+  },
+
+  // ..or Nodemon
+  nodemon: {
+
+  }
+};
+
+require('./gulp/launch')( config );
 ```

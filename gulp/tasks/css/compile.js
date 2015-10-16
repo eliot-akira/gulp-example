@@ -14,11 +14,13 @@ module.exports = function runCompileCSS( options, dev ) {
 
   var stream = gulp.src( entry )
 
-    .pipe(plugins.plumber())
-
     .pipe( gulpif( dev, plugins.sourcemaps.init({}) ) )
 
-    .pipe( gulpif( options.sass, plugins.sass( options.sass ).on('error', plugins.sass.logError) ) )
+    .pipe( gulpif( options.sass, plugins.sass( options.sass ) ))
+    .on('error', function(err) {
+      log('Error', err.message);
+      this.emit('end');
+    })
 
     .pipe( gulpif( options.autoprefix, plugins.autoprefixer( options.autoprefix ) ) )
 
